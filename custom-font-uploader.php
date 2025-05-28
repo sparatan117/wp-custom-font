@@ -3,7 +3,7 @@
  * Plugin Name: Custom Font Uploader
  * Plugin URI: 
  * Description: Allows users to upload custom fonts through the WordPress general settings page.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Austin Ross
  * Author URI: https://rossworks.net
  * License: GPL v2 or later
