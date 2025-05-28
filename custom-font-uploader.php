@@ -19,12 +19,25 @@ if (!defined('ABSPATH')) {
 // Define plugin constants
 define('CFU_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('CFU_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('CFU_FONTS_DIR', CFU_PLUGIN_DIR . 'fonts/');
-define('CFU_FONTS_URL', CFU_PLUGIN_URL . 'fonts/');
+define('CFU_FONTS_DIR', wp_upload_dir()['basedir'] . '/custom-fonts/');
+define('CFU_FONTS_URL', wp_upload_dir()['baseurl'] . '/custom-fonts/');
 
 // Create fonts directory if it doesn't exist
 if (!file_exists(CFU_FONTS_DIR)) {
     wp_mkdir_p(CFU_FONTS_DIR);
+    
+    // Create an index.php file to prevent directory listing
+    $index_file = CFU_FONTS_DIR . 'index.php';
+    if (!file_exists($index_file)) {
+        file_put_contents($index_file, '<?php // Silence is golden');
+    }
+    
+    // Create a .htaccess file to prevent direct access to font files
+    $htaccess_file = CFU_FONTS_DIR . '.htaccess';
+    if (!file_exists($htaccess_file)) {
+        $htaccess_content = "Order deny,allow\nDeny from all\n";
+        file_put_contents($htaccess_file, $htaccess_content);
+    }
 }
 
 // Add settings link to plugins page
@@ -198,15 +211,56 @@ function cfu_add_font_face_declarations() {
         $font_name = $font['name'];
         $file_ext = pathinfo($font['file'], PATHINFO_EXTENSION);
         
+        // Convert file extension to proper format for @font-face
+        $format = 'woff2';
+        switch ($file_ext) {
+            case 'woff':
+                $format = 'woff';
+                break;
+            case 'woff2':
+                $format = 'woff2';
+                break;
+            case 'ttf':
+                $format = 'truetype';
+                break;
+            case 'otf':
+                $format = 'opentype';
+                break;
+        }
+        
         $css .= "@font-face {";
         $css .= "font-family: '{$font_name}';";
-        $css .= "src: url('{$font_url}') format('{$file_ext}');";
+        $css .= "src: url('{$font_url}') format('{$format}');";
         $css .= "font-weight: normal;";
         $css .= "font-style: normal;";
+        $css .= "font-display: swap;"; // Add font-display for better performance
         $css .= "}";
     }
     $css .= '</style>';
 
     echo $css;
 }
-add_action('wp_head', 'cfu_add_font_face_declarations'); 
+add_action('wp_head', 'cfu_add_font_face_declarations');
+
+// Register uninstall hook
+register_uninstall_hook(__FILE__, 'cfu_uninstall');
+
+// Clean up when plugin is uninstalled
+function cfu_uninstall() {
+    // Delete all uploaded fonts
+    $uploaded_fonts = get_option('custom_font_file', array());
+    foreach ($uploaded_fonts as $font) {
+        $file_path = CFU_FONTS_DIR . $font['file'];
+        if (file_exists($file_path)) {
+            unlink($file_path);
+        }
+    }
+    
+    // Remove the fonts directory if it's empty
+    if (is_dir(CFU_FONTS_DIR) && count(glob(CFU_FONTS_DIR . "*")) === 0) {
+        rmdir(CFU_FONTS_DIR);
+    }
+    
+    // Delete the plugin options
+    delete_option('custom_font_file');
+} 
