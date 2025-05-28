@@ -12,6 +12,13 @@ A WordPress plugin that allows users to upload custom fonts through the WordPres
 
 ## Installation
 
+### Method 1: Using the ZIP file (Recommended)
+1. Download the `custom-font-uploader.zip` file from the releases
+2. Go to WordPress admin panel > Plugins > Add New
+3. Click "Upload Plugin" and select the downloaded zip file
+4. Click "Install Now" and then "Activate"
+
+### Method 2: Manual Installation
 1. Download the plugin files
 2. Upload the `custom-font-uploader` folder to the `/wp-content/plugins/` directory
 3. Activate the plugin through the 'Plugins' menu in WordPress
