@@ -1,0 +1,32 @@
+.custom-font-uploader {
+    margin: 20px 0;
+}
+
+.custom-font-uploader input[type="file"] {
+    margin-bottom: 10px;
+}
+
+.uploaded-fonts {
+    margin-top: 15px;
+    padding: 0;
+    list-style: none;
+}
+
+.uploaded-fonts li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 5px;
+    background: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+}
+
+.uploaded-fonts .delete-font {
+    margin-left: 10px;
+}
+
+.uploaded-fonts .delete-font:hover {
+    color: #dc3232;
+} 
