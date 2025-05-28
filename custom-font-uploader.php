@@ -66,8 +66,14 @@ function cfu_font_upload_field_callback() {
     $uploaded_fonts = get_option('custom_font_file', array());
     ?>
     <div class="custom-font-uploader">
-        <input type="file" name="custom_font_file" id="custom_font_file" accept=".woff,.woff2,.ttf,.otf" />
-        <p class="description"><?php _e('Select a font file to upload', 'custom-font-uploader'); ?></p>
+        <form method="post" enctype="multipart/form-data">
+            <?php settings_fields('general'); ?>
+            <input type="file" name="custom_font_file" id="custom_font_file" accept=".woff,.woff2,.ttf,.otf" />
+            <p class="description"><?php _e('Select a font file to upload', 'custom-font-uploader'); ?></p>
+            <p class="submit">
+                <input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e('Upload Font', 'custom-font-uploader'); ?>">
+            </p>
+        </form>
         
         <?php if (!empty($uploaded_fonts)) : ?>
             <h3><?php _e('Uploaded Fonts', 'custom-font-uploader'); ?></h3>
